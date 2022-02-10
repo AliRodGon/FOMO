@@ -9,7 +9,7 @@ const authRoute = require("./routes/auth.js");
 
 dotenv.config();
 
-mongoose.connect(process.env.MONGO_URL, {useNewUrlPArser: true}, ()=> {
+mongoose.connect(process.env.MONGO_URL, {useNewUrlParser: true}, ()=> {
 console.log("Connection to MONGO is OK!")
 
 });
