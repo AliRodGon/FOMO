@@ -70,8 +70,7 @@ router.put("/:id/follow", async (req,res)=> {
                await userToBeFollowed.updateOne({$push: { followers: req.params.id} } ) 
                console.log(req.params.id)
                console.log(req.body.userId)
-               res.status(200).json(`You are following ${userToBeFollowed.username}!!
-               `)
+               res.status(200).json(`You are following ${userToBeFollowed.username}!!`)
             } else { // y si el user de la url YA TIENE 
                 res.status(403).json("You already follow this user") }
         } catch (err) {
@@ -83,7 +82,35 @@ router.put("/:id/follow", async (req,res)=> {
 })
 
 
-
 //unfollow a user
+
+router.put("/:id/unfollow", async (req,res)=> {
+    if (req.params.id !== req.body.userId) {
+        
+        try{
+            const user = await User.findById(req.params.id); //este id es el que va en la url. por params solo llega el id, porque es lo unico que va en la url
+            const userToBeFollowed = await User.findById(req.body.userId); //este es el que se pasa por body. De este se puede saber todo, porque lo localiza en la BD
+           
+          
+            if(userToBeFollowed.followers.includes(req.params.id)){ 
+               await user.updateOne({$pull: { followings: req.body.userId} } ) 
+               
+               await userToBeFollowed.updateOne({$pull: { followers: req.params.id} } ) 
+               console.log(req.params.id)
+               console.log(req.body.userId)
+               res.status(200).json(`You are no longer following ${userToBeFollowed.username}!!`)
+            } else { 
+                res.status(403).json("You don't follow this user") }
+        } catch (err) {
+            res.status(500).json(err)
+        }
+    }else {
+        res.status(403).json("You can't unfollow yourself")
+    }
+})
+
+
+
+
 
 module.exports = router
